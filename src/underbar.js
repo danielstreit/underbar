@@ -323,6 +323,9 @@ var _ = {};
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    return array.slice().sort(function() {
+      return Math.random() - .5;
+    });
   };
 
 
