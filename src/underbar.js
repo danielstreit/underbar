@@ -429,6 +429,24 @@ var _ = {};
   //
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
+    var lastReturn;
+    var lastDate = 0;
+    var queued = false;
+
+    return function() {
+      if (Date.now() - lastDate > wait) {
+        lastDate = Date.now();
+        lastReturn = func(arguments);
+      } else if (!queued) {
+        queued = true;
+        setTimeout(function(arguments) {
+          lastReturn = func(arguments);
+          queued = false;
+        lastDate = Date.now();
+        }, wait - Date.now() + lastDate);
+      }
+      return lastReturn;
+    }
   };
 
 }).call(this);
