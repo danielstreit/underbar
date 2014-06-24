@@ -295,7 +295,7 @@ var _ = {};
       var res = func(arg);
       memo[arg] = res;
       return res;
-    }
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -324,7 +324,7 @@ var _ = {};
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
     return array.slice().sort(function() {
-      return Math.random() - .5;
+      return Math.random() - 0.5;
     });
   };
 
@@ -352,8 +352,12 @@ var _ = {};
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
     var maxLength = 0;
+    var i;
     var result = [];
     var temp = [];
+    var combine = function(arg) {
+      temp.push(arg[i]);
+    };
 
     _.each(arguments, function(arg) {
       if (arg.length > maxLength) {
@@ -361,11 +365,9 @@ var _ = {};
       }
     });
 
-    for (var i = 0; i < maxLength; i++) {
+    for (i = 0; i < maxLength; i++) {
       temp = [];
-      _.each(arguments, function(arg) {
-        temp.push(arg[i]);
-      });
+      _.each(arguments, combine);
       result.push(temp);
     }
 
@@ -434,19 +436,20 @@ var _ = {};
     var queued = false;
 
     return function() {
+      var args = arguments;
       if (Date.now() - lastDate > wait) {
         lastDate = Date.now();
-        lastReturn = func(arguments);
+        lastReturn = func(args);
       } else if (!queued) {
         queued = true;
-        setTimeout(function(arguments) {
-          lastReturn = func(arguments);
+        setTimeout(function() {
+          lastReturn = func(args);
           queued = false;
         lastDate = Date.now();
         }, wait - Date.now() + lastDate);
       }
       return lastReturn;
-    }
+    };
   };
 
 }).call(this);
